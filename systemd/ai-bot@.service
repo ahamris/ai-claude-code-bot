@@ -1,0 +1,29 @@
+[Unit]
+Description=AI Bot - %i
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=claude
+Group=claude
+WorkingDirectory=/opt/ai-bot
+ExecStart=/opt/ai-bot/venv/bin/python -m src.bot /opt/ai-bot/configs/%i.yaml
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=ai-bot-%i
+
+# Beveiliging
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/opt/ai-bot/data /opt/ai-bot/configs
+PrivateTmp=yes
+
+# Omgevingsvariabelen
+Environment=PYTHONUNBUFFERED=1
+Environment=HOME=/home/claude
+
+[Install]
+WantedBy=multi-user.target

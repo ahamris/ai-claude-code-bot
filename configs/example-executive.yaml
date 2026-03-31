@@ -1,0 +1,35 @@
+bot:
+  name: "Executive Assistant"
+  token: "BOT_TOKEN_HERE"
+  chat_ids: [1805563405]
+
+ai:
+  max_turns: 25
+  timeout: 300
+  working_dir: "/home/claude/executive-workspace"
+  system_prompt: |
+    Je bent een executive assistant voor de oprichter van CodeLabs B.V.
+    Je helpt met strategische planning, financiele analyses, compliance,
+    offertes, en communicatie.
+    Denk vanuit overheids-inkoopkaders (ARVODI, PIANOo, DAS).
+    Bij compliance: altijd AVG, BIO2, NIS2, Woo, WCAG 2.2 AA meenemen.
+    Financiele bedragen zijn altijd exclusief BTW tenzij anders aangegeven.
+    Wees eerlijk en kritisch, geen ja-knikker.
+    Communiceer in het Nederlands.
+
+memory:
+  enabled: true
+  auto_learn: true
+  data_dir: "/opt/ai-bot/executive/data"
+
+monitoring:
+  enabled: false
+
+plugins: []
+
+formatter:
+  mode: "html"
+  strip_markdown: true
+
+logging:
+  level: "INFO"

@@ -1,0 +1,37 @@
+bot:
+  name: "Facility Bot"
+  token: "BOT_TOKEN_HERE"
+  chat_ids: [1805563405]
+
+ai:
+  max_turns: 15
+  timeout: 120
+  system_prompt: |
+    Je bent een Facility AI assistant voor gebouwbeheer.
+    Je beheert Home Assistant apparaten, verlichting, klimaat en beveiliging.
+    Wees behulpzaam en duidelijk. Leg uit wat je doet.
+    Communiceer in het Nederlands.
+
+memory:
+  enabled: true
+  auto_learn: true
+  data_dir: "/opt/ai-bot/facility/data"
+
+monitoring:
+  enabled: false
+
+plugins:
+  - homeassistant
+
+plugins_config:
+  homeassistant:
+    url: "http://192.168.1.245:8123"
+    token: "HA_LONG_LIVED_TOKEN_HERE"
+    verify_ssl: false
+
+formatter:
+  mode: "html"
+  strip_markdown: true
+
+logging:
+  level: "INFO"

@@ -1,0 +1,65 @@
+bot:
+  name: "DevOps Bot"
+  token: "BOT_TOKEN_HERE"
+  chat_ids: [1805563405]
+
+ai:
+  max_turns: 25
+  timeout: 300
+  system_prompt: |
+    Je bent een DevOps AI assistant voor infrastructuurbeheer.
+    Je beheert Proxmox VE hosts, containers, VMs, netwerken en services.
+    Je hebt SSH toegang tot de servers en kunt commands uitvoeren.
+    Wees bondig en technisch. Gebruik geen onnodige uitleg.
+    Als je een command moet uitvoeren, doe het dan direct.
+    Communiceer in het Nederlands.
+
+memory:
+  enabled: true
+  auto_learn: true
+  data_dir: "/opt/ai-bot/devops/data"
+
+monitoring:
+  enabled: true
+  health_check_interval: 300
+  security_scan_interval: 900
+  hosts:
+    mgmt:
+      pve-00: "10.10.1.8"
+      pve-01: "10.10.1.9"
+    dmz:
+      cl-websrv: "45.140.140.18"
+    remote:
+      contabo: "62.171.185.137"
+  web_services:
+    "PVE UI": ["10.10.1.8", 8006]
+
+ssh:
+  user: "root"
+  hosts:
+    pve-00: "10.10.1.8"
+    pve-01:
+      host: "10.10.1.9"
+      jump: "10.10.1.8"
+    cl-websrv: "45.140.140.18"
+    contabo: "62.171.185.137"
+
+plugins:
+  - proxmox
+  - mikrotik
+
+plugins_config:
+  proxmox:
+    default_host: "pve-00"
+    default_storage: "local-lvm"
+  mikrotik:
+    host: "10.10.1.1"
+    user: "admin"
+    port: 22
+
+formatter:
+  mode: "plain"
+  strip_markdown: true
+
+logging:
+  level: "INFO"
