@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="nl" class="dark">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,98 +8,150 @@
         <title>{{ config('app.name', 'AI Bot Admin') }}</title>
 
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="/fontawesome/css/all.min.css">
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @fluxAppearance
     </head>
-    <body class="font-sans antialiased bg-gray-50">
-        <div class="min-h-screen flex">
-            {{-- Sidebar --}}
-            <aside class="w-64 bg-gray-900 text-gray-300 flex flex-col flex-shrink-0 min-h-screen">
-                <div class="p-4 border-b border-gray-700">
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
-                        <svg class="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                        </svg>
-                        <span class="text-lg font-bold text-white">AI Bot Admin</span>
-                    </a>
-                </div>
+    <body class="min-h-screen bg-white dark:bg-zinc-800">
+        <flux:sidebar sticky stashable class="border-r border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+            <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-                <nav class="flex-1 p-4 space-y-1">
-                    <a href="{{ route('dashboard') }}"
-                       class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition {{ request()->routeIs('dashboard') ? 'bg-gray-800 text-white' : 'hover:bg-gray-800 hover:text-white' }}">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                        Dashboard
-                    </a>
-
-                    <a href="{{ route('bots.index') }}"
-                       class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition {{ request()->routeIs('bots.*') ? 'bg-gray-800 text-white' : 'hover:bg-gray-800 hover:text-white' }}">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
-                        Bots
-                        <span class="ml-auto bg-gray-700 text-gray-300 text-xs px-2 py-0.5 rounded-full">
-                            {{ \App\Models\Bot::count() }}
-                        </span>
-                    </a>
-
-                    @php $bots = \App\Models\Bot::orderBy('name')->get(); @endphp
-                    @foreach($bots as $sidebarBot)
-                        <div class="ml-4 space-y-0.5">
-                            <div class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                {{ $sidebarBot->name }}
-                            </div>
-                            <a href="{{ route('bots.edit', $sidebarBot) }}"
-                               class="flex items-center gap-2 px-3 py-1 rounded text-xs transition hover:bg-gray-800 hover:text-white">
-                                <span class="w-1.5 h-1.5 rounded-full {{ $sidebarBot->is_active ? 'bg-green-400' : 'bg-gray-500' }}"></span>
-                                Instellingen
-                            </a>
-                            <a href="{{ route('bots.knowledge', $sidebarBot) }}"
-                               class="flex items-center gap-2 px-3 py-1 rounded text-xs transition hover:bg-gray-800 hover:text-white">
-                                Knowledge
-                            </a>
-                            <a href="{{ route('bots.conversations', $sidebarBot) }}"
-                               class="flex items-center gap-2 px-3 py-1 rounded text-xs transition hover:bg-gray-800 hover:text-white">
-                                Gesprekken
-                            </a>
-                            <a href="{{ route('bots.monitoring', $sidebarBot) }}"
-                               class="flex items-center gap-2 px-3 py-1 rounded text-xs transition hover:bg-gray-800 hover:text-white">
-                                Monitoring
-                            </a>
-                            <a href="{{ route('bots.logs', $sidebarBot) }}"
-                               class="flex items-center gap-2 px-3 py-1 rounded text-xs transition hover:bg-gray-800 hover:text-white">
-                                Logs
-                            </a>
-                        </div>
-                    @endforeach
-                </nav>
-
-                <div class="p-4 border-t border-gray-700">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-sm font-bold">
-                            {{ substr(auth()->user()->name ?? 'A', 0, 1) }}
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-white truncate">{{ auth()->user()->name ?? 'Admin' }}</p>
-                            <p class="text-xs text-gray-400 truncate">{{ auth()->user()->email ?? '' }}</p>
-                        </div>
-                        <a href="{{ route('profile') }}" class="text-gray-400 hover:text-white">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        </a>
+            <flux:brand href="{{ route('dashboard') }}" class="px-2">
+                <div class="flex items-center gap-2">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600">
+                        <i class="fa-solid fa-robot text-white text-sm"></i>
                     </div>
+                    <span class="text-lg font-bold truncate">AI Bot Admin</span>
                 </div>
-            </aside>
+            </flux:brand>
 
-            {{-- Main content --}}
-            <div class="flex-1 flex flex-col">
-                <main class="flex-1 p-6">
-                    @if (session()->has('message'))
-                        <div class="mb-4 p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm">
-                            {{ session('message') }}
-                        </div>
-                    @endif
+            <flux:navlist variant="outline">
+                <flux:navlist.group>
+                    <flux:navlist.item
+                        href="{{ route('dashboard') }}"
+                        :current="request()->routeIs('dashboard')"
+                    >
+                        <i class="fa-solid fa-gauge-high w-5 text-center"></i>
+                        Dashboard
+                    </flux:navlist.item>
 
-                    {{ $slot }}
-                </main>
-            </div>
-        </div>
+                    <flux:navlist.item
+                        href="{{ route('bots.index') }}"
+                        :current="request()->routeIs('bots.index') || request()->routeIs('bots.create')"
+                    >
+                        <i class="fa-solid fa-robot w-5 text-center"></i>
+                        Bots
+                        <flux:badge size="sm" class="ml-auto">{{ \App\Models\Bot::count() }}</flux:badge>
+                    </flux:navlist.item>
+                </flux:navlist.group>
+
+                @php $sidebarBots = \App\Models\Bot::orderBy('name')->get(); @endphp
+                @foreach($sidebarBots as $sidebarBot)
+                    <flux:navlist.group heading="{{ $sidebarBot->name }}" expandable :expanded="request()->is('*bots/' . $sidebarBot->id . '*')">
+                        <flux:navlist.item
+                            href="{{ route('bots.edit', $sidebarBot) }}"
+                            :current="request()->routeIs('bots.edit') && request()->route('bot')?->id === $sidebarBot->id"
+                        >
+                            <i class="fa-solid fa-gear w-5 text-center text-xs"></i>
+                            Instellingen
+                            @if($sidebarBot->is_active)
+                                <span class="ml-auto inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+                            @else
+                                <span class="ml-auto inline-block w-2 h-2 rounded-full bg-zinc-400"></span>
+                            @endif
+                        </flux:navlist.item>
+
+                        <flux:navlist.item
+                            href="{{ route('bots.knowledge', $sidebarBot) }}"
+                            :current="request()->routeIs('bots.knowledge*') && request()->route('bot')?->id === $sidebarBot->id"
+                        >
+                            <i class="fa-solid fa-brain w-5 text-center text-xs"></i>
+                            Knowledge
+                        </flux:navlist.item>
+
+                        <flux:navlist.item
+                            href="{{ route('bots.conversations', $sidebarBot) }}"
+                            :current="request()->routeIs('bots.conversations') && request()->route('bot')?->id === $sidebarBot->id"
+                        >
+                            <i class="fa-solid fa-comments w-5 text-center text-xs"></i>
+                            Gesprekken
+                        </flux:navlist.item>
+
+                        <flux:navlist.item
+                            href="{{ route('bots.monitoring', $sidebarBot) }}"
+                            :current="request()->routeIs('bots.monitoring') && request()->route('bot')?->id === $sidebarBot->id"
+                        >
+                            <i class="fa-solid fa-chart-line w-5 text-center text-xs"></i>
+                            Monitoring
+                        </flux:navlist.item>
+
+                        <flux:navlist.item
+                            href="{{ route('bots.logs', $sidebarBot) }}"
+                            :current="request()->routeIs('bots.logs') && request()->route('bot')?->id === $sidebarBot->id"
+                        >
+                            <i class="fa-solid fa-scroll w-5 text-center text-xs"></i>
+                            Logs
+                        </flux:navlist.item>
+                    </flux:navlist.group>
+                @endforeach
+            </flux:navlist>
+
+            <flux:spacer />
+
+            <flux:navlist variant="outline">
+                <flux:navlist.item href="{{ route('profile') }}">
+                    <i class="fa-solid fa-gear w-5 text-center"></i>
+                    Instellingen
+                </flux:navlist.item>
+            </flux:navlist>
+
+            <flux:dropdown position="top" align="start">
+                <flux:profile
+                    :name="auth()->user()->name ?? 'Admin'"
+                    :initials="substr(auth()->user()->name ?? 'A', 0, 1)"
+                    icon-trailing="chevrons-up-down"
+                />
+
+                <flux:menu class="min-w-[200px]">
+                    <flux:menu.item href="{{ route('profile') }}" icon="user">Profiel</flux:menu.item>
+                    <flux:menu.separator />
+                    <flux:menu.item
+                        icon="arrow-right-start-on-rectangle"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                    >
+                        Uitloggen
+                    </flux:menu.item>
+                </flux:menu>
+            </flux:dropdown>
+
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                @csrf
+            </form>
+        </flux:sidebar>
+
+        <flux:header class="lg:hidden">
+            <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+
+            <flux:spacer />
+
+            <flux:profile
+                :initials="substr(auth()->user()->name ?? 'A', 0, 1)"
+                icon-trailing="chevron-down"
+            />
+        </flux:header>
+
+        <flux:main>
+            @if (session()->has('message'))
+                <div class="mb-6">
+                    <flux:callout variant="success" icon="check-circle" dismissible>
+                        {{ session('message') }}
+                    </flux:callout>
+                </div>
+            @endif
+
+            {{ $slot }}
+        </flux:main>
     </body>
 </html>
