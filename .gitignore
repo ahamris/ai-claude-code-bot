@@ -1,0 +1,6 @@
+admin/vendor/
+admin/node_modules/
+admin/.env
+admin/database/database.sqlite
+admin/public/build/
+admin/storage/*.key
